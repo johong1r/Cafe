@@ -20,12 +20,46 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ke*yld1x1d2dd9!%ifc(osv*751uv(hg1h&!m%f74^9o_pq8_^'
+# SECRET_KEY = 'django-insecure-ke*yld1x1d2dd9!%ifc(osv*751uv(hg1h&!m%f74^9o_pq8_^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+from pathlib import Path
+import environ
+import os
+from decouple import config
 
-ALLOWED_HOSTS = []
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+SECRET_KEY = config('SECRET_KEY')
+DEBUG = config('DEBUG', default=False, cast=bool)
+
+ALLOWED_HOSTS = ["*"]
+
+USE_POSTGRES = config('USE_POSTGRES', default=False, cast=bool)
+DB_NAME = config('DB_NAME', default='db.sqlite3')
+DB_USER = config('DB_USER', default='')
+DB_PASSWORD = config('DB_PASSWORD', default='')
+DB_HOST = config('DB_HOST', default='localhost')
+DB_PORT = config('DB_PORT', default='5432')
+
+if USE_POSTGRES:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': DB_NAME,
+            'USER': DB_USER,
+            'PASSWORD': DB_PASSWORD,
+            'HOST': DB_HOST,
+            'PORT': DB_PORT,
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / DB_NAME,
+        }
+    }
 
 
 # Application definition
@@ -154,3 +188,17 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_POST = 587
+
+
+EMAIL_HOST_USER = 'myemail@gmail.com'
+EMAIL_HOST_PASSWORD = 'code'
+
+DEFAULT_FROM_EMAIL = 'myemail260908@gmail.com'
