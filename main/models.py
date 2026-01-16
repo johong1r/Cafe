@@ -54,7 +54,7 @@ class OrdemItem(models.Model):
     quantity = models.PositiveIntegerField(verbose_name='Количество')
 
     def __str__(self):
-        return self.order
+        return f'{self.order}'
     
     class Meta:
         verbose_name = 'Товар заказа'

@@ -20,12 +20,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = 'django-insecure-ke*yld1x1d2dd9!%ifc(osv*751uv(hg1h&!m%f74^9o_pq8_^'
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 from pathlib import Path
-import environ
-import os
 from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -35,12 +33,14 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = ["*"]
 
+# Читаем параметры БД
 USE_POSTGRES = config('USE_POSTGRES', default=False, cast=bool)
-DB_NAME = config('DB_NAME', default='db.sqlite3')
-DB_USER = config('DB_USER', default='')
-DB_PASSWORD = config('DB_PASSWORD', default='')
-DB_HOST = config('DB_HOST', default='localhost')
-DB_PORT = config('DB_PORT', default='5432')
+
+DB_NAME = config('DB_NAME')
+DB_USER = config('DB_USER')
+DB_PASSWORD = config('DB_PASSWORD')
+DB_HOST = config('DB_HOST')
+DB_PORT = config('DB_PORT')
 
 if USE_POSTGRES:
     DATABASES = {
@@ -57,10 +57,12 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / DB_NAME,
+            'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
 
+
+    
 
 # Application definition
 
@@ -114,12 +116,7 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+
 
 
 # Password validation
@@ -159,6 +156,14 @@ REST_FRAMEWORK = {
     ],
     
 }
+
+
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
+CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
 
 
 # Internationalization
@@ -201,4 +206,4 @@ EMAIL_POST = 587
 EMAIL_HOST_USER = 'myemail@gmail.com'
 EMAIL_HOST_PASSWORD = 'code'
 
-DEFAULT_FROM_EMAIL = 'myemail260908@gmail.com'
+DEFAULT_FROM_EMAIL = 'myemail@gmail.com'
