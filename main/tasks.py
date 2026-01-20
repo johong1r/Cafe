@@ -1,6 +1,7 @@
 from celery import shared_task
 import logging
 
+
 logger = logging.getLogger(__name__)
 
 @shared_task(bind=True)
@@ -10,3 +11,7 @@ def nums(self):
         n += 1
         print(n)
     return n
+
+
+# @shared_task()
+# def delete_inactive_user():
